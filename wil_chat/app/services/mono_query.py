@@ -22,7 +22,7 @@ from typing import List
 from dotenv import load_dotenv
 load_dotenv()
 
-llm = OpenAI(temperature=0.7, model="gpt-3.5-turbo-0125")
+llm = OpenAI(temperature=0.2, model="gpt-3.5-turbo-0125")
 MONGO_URI = os.getenv('MONGODB_CONNECTION_STRING')
 
 
@@ -55,7 +55,7 @@ def create_bm25_retriever(docstore):
 def query_fusion_retriever(vector_retriever, bm25_retriever):
     retriever = QueryFusionRetriever(
     [vector_retriever, bm25_retriever],
-    similarity_top_k=6,
+    similarity_top_k=2,
     num_queries=1,  # set this to 1 to disable query generation
     mode="reciprocal_rerank",
     use_async=True,
@@ -82,17 +82,20 @@ def create_agent_mono(query_engine,course_name):
             llm=llm,
             verbose=True,
             
-            system_prompt = f"""\
-    You are a helpful assistant that answer queries about the Wild Cats Innovation labs
-    Your primary goal is to provide clear and concise explanations.
-    Please always use the tools provided to answer a question. Do not rely on prior knowledge.
+            system_prompt = """\
+
+You are an agent designed to answer queries about the documentation of Innovation labs.
+Generate a comprehensive and informative answer of 80 words or less for the given question based solely on the given context.
+You must only use information from the context. 
+
+If there is nothing in the context just say "Hmm, I'm not sure." Don't try to make up an answer.
+
+
 """
 
 , 
 )
     return agent
-
-
 
 
 
