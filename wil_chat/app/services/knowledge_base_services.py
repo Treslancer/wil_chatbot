@@ -3,8 +3,7 @@ from llama_index.core import (
     VectorStoreIndex,
     StorageContext,
 )
-
-
+from llama_index.core.node_parser import SentenceSplitter
 from llama_index.storage.docstore.mongodb import MongoDocumentStore
 from llama_index.core import Document
 import os
@@ -12,7 +11,7 @@ from llama_index.vector_stores.mongodb import MongoDBAtlasVectorSearch
 from llama_index.core import Document
 import pymongo
 from llama_index.embeddings.openai import OpenAIEmbedding
-from llama_index.core.node_parser import SemanticSplitterNodeParser
+ 
 from typing import List
 from dotenv import load_dotenv
 load_dotenv()
@@ -24,15 +23,14 @@ def add_data(category: str,data: List[Document],topic:str = ""):
     try:
         mongodb_client = pymongo.MongoClient(MONGO_URI)
         
-        for doc in data:
-            doc.metadata["Topic"] = topic
-            doc.excluded_embed_metadata_keys  = ["file_path","file_size","creation_date","last_modified_date"]
+
 
         #Chunking
-        splitter = SemanticSplitterNodeParser(
-            buffer_size=1, breakpoint_percentile_threshold=95, embed_model=embed_model
-            )
-        nodes = splitter.get_nodes_from_documents(data)
+        # splitter = SemanticSplitterNodeParser(
+        #     buffer_size=1, breakpoint_percentile_threshold=95, embed_model=embed_model
+        #     )
+        node_parser = SentenceSplitter(chunk_size=1024, chunk_overlap=20)
+        nodes = node_parser.get_nodes_from_documents(data)
 
 
         #create a vector index
