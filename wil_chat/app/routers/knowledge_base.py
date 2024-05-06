@@ -7,9 +7,9 @@ import tempfile
 from llama_index.core import Document
 import requests
 import os
-from routers.schemas import Text_knowledgeBase
+from .schemas import Text_knowledgeBase
 from tempfile import TemporaryDirectory
-from services.knowledge_base_services import(
+from app.services.knowledge_base_services import(
 add_file_to_category, 
 add_data, 
 get_all_course, 

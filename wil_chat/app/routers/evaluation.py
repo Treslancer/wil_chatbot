@@ -5,7 +5,7 @@ from llama_index.core import (
 from llama_index.core.node_parser import SentenceSplitter
 import requests
 from tempfile import TemporaryDirectory
-from services.evaluation_services import file_cost_embeddings
+from app.services.evaluation_services import file_cost_embeddings
 
 router = APIRouter(
     prefix="/evaluate",

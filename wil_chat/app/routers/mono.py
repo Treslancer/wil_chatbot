@@ -7,15 +7,15 @@ import tempfile
 from llama_index.core import Document
 import requests
 import os
-from services.knowledge_base_services import add_file_to_category, add_data, get_all_course, get_all_files,delete_course_file,delete_file
-from services.mono_query import (
+from app.services.knowledge_base_services import add_file_to_category, add_data, get_all_course, get_all_files,delete_course_file,delete_file
+from app.services.mono_query import (
     get_vector_index, 
     create_agent_mono,
        get_docstore,
     query_fusion_retriever,
     create_bm25_retriever,
     )
-from services.memory_services import ChatHistory
+from app.services.memory_services import ChatHistory
 router = APIRouter(
     prefix="/mono",
     tags=["mono"]
