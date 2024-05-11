@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  wil_chat:
+    build:
+      context: ./wil_chat
+      dockerfile: Dockerfile
+    image: chat
+    container_name: chat
+    ports:
+      - 5000:5000
+    networks:
+      - wildchat
+  
+  wil_dashboard:
+    build:
+      context: ./wil_dashboard
+      dockerfile: Dockerfile
+    image: dashboard
+    container_name: dashboard
+    ports:
+      - 3000:3000
+    networks:
+      - wildchat
+
+networks:
+  wildchat:
+    driver: bridge
