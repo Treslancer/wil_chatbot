@@ -2,7 +2,7 @@ import { FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage, Delete, Win
 import { Box, IconButton, Paper, Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow } from "@mui/material";
 import { useState, useEffect } from "react";
 import { styled } from "@mui/system";
-import axios from '../../axiosConfig';
+import axiosInstance from '../../axiosConfig';
 import DeleteFileDialog from "./DeleteFileDialog";
 
 function TablePaginationActions(props) {
@@ -82,7 +82,7 @@ function DisplayTable() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:5000/get_filename');
+                const response = await axiosInstance.get('http://0.0.0.0:5000/get_filename');
                 const fileNames = response.data.fileNames;
 
                 const updatedTransactionHistory = fileNames.map(filename => ({

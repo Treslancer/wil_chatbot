@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogContent, DialogTitle, DialogActions, Box, Typography } from "@mui/material";
-import axios from '../../axiosConfig';
+import axiosInstance from '../../axiosConfig';
 import { useState } from "react";
 const DeleteFileDialog = (props) => {
     const [isSuccessful, setIsSuccessful] = useState(false);
@@ -8,7 +8,7 @@ const DeleteFileDialog = (props) => {
 
     const handleSave = async () => {
         try {
-            const response = await axios.delete('http://127.0.0.1:5000/delete_item', {
+            const response = await axiosInstance.delete('http://0.0.0.0:5000/delete_item', {
               data: { item: props.filename }, // Pass the item name in the request body
             });
       

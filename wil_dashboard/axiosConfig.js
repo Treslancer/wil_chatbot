@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: '', // Replace with your API base URL
+  baseURL: 'https://cors-anywhere.herokuapp.com/', // Replace with your API base URL
   timeout: 10000, // Adjust timeout as needed
   headers: {
     'Access-Control-Allow-Origin': '*',

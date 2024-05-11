@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from '../../axiosConfig';
+import axiosInstance from '../../axiosConfig';
 import { Button, Dialog, DialogContent, DialogTitle, DialogActions, Box, Typography, TextField } from "@mui/material";
 
 const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
@@ -42,7 +42,7 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
         formData.append('course_name', course);
         
         try {
-            const response = await axios.post('http://127.0.0.1:8000/ingest_data/uploadfile/', formData);
+            const response = await axiosInstance.post('http://0.0.0.0:8000/ingest_data/uploadfile/', formData);
             console.log(response.data);
             setStatusMessage('FILE uploaded successfully!');
         } catch (error) {
@@ -67,7 +67,7 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
         formData.append('course_name', course);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/ingest_data/downloadlink/', formData);
+            const response = await axiosInstance.post('http://0.0.0.0:8000/ingest_data/downloadlink/', formData);
             console.log(response.data);
             setStatusMessage('URL uploaded successfully!');
         } catch (error) {
@@ -95,7 +95,7 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
         formData.append('text', text);
     
         try {
-            const response = await axios.post('http://127.0.0.1:8000/ingest_data/add_text_knowledge_base/', formData);
+            const response = await axiosInstance.post('http://0.0.0.0:8000/ingest_data/add_text_knowledge_base/', formData);
             console.log(response.data);
             setStatusMessage('TEXT uploaded successfully!');
         } catch (error) {
