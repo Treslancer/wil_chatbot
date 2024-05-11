@@ -2,7 +2,7 @@ import { FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage, Delete, Win
 import { Box, IconButton, Paper, Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow } from "@mui/material";
 import { useState, useEffect } from "react";
 import { styled } from "@mui/system";
-import axios from './axiosConfig';
+import axios from '../../axiosConfig';
 import DeleteFileDialog from "./DeleteFileDialog";
 
 function TablePaginationActions(props) {

@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogContent, DialogTitle, DialogActions, Box, Typography } from "@mui/material";
-import axios from './axiosConfig';
+import axios from '../../axiosConfig';
 import { useState } from "react";
 const DeleteFileDialog = (props) => {
     const [isSuccessful, setIsSuccessful] = useState(false);

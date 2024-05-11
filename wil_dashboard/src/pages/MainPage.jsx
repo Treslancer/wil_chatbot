@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Card, List, ListItem, Typography } from "@mui/material";
 import NavBar from '../components/Navbar';
-import axios from './axiosConfig';
+import axios from '../../axiosConfig';
 import DisplayTable from "../components/DisplayTable";
 import UploadFileDialog from '../components/UploadFIleDialog';
 
