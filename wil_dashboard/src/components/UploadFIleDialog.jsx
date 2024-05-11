@@ -27,43 +27,101 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
         setText(event.target.value);
     };
 
-    const uploadContent = async () => {
-        setIsError(false); // Reset error state
-        setStatusMessage(`Uploading ${uploadType}...`);
-
-        const formData = new FormData();
-        if (uploadType === 'file') {
-            if (!file || !course) {
-                setIsError(true);
-                setErrorMessage('Please provide a file and specify the course');
-                return;
-            }
-            formData.append('file', file);
-            formData.append('course_name', course);
-        } else if (uploadType === 'url') {
-            if (!url) {
-                setIsError(true);
-                setErrorMessage('Please provide a URL');
-                return;
-            }
-            formData.append('url', url);
-        } else if (uploadType === 'text') {
-            if (!text) {
-                setIsError(true);
-                setErrorMessage('Please provide text');
-                return;
-            }
-            formData.append('text', text);
+    const uploadFile = async () => {
+        console.log('Uploading file...');
+        if (!file || !course) {
+            setIsError(true);
+            setErrorMessage('Please provide a file and specify the course');
+            console.error('Error: Please provide a file and specify the course');
+            return;
         }
+        setIsError(false);
+        setStatusMessage('Uploading file...');
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('course_name', course);
+        
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/ingest_data/uploadfile/', formData);
+            console.log(response.data);
+            setStatusMessage('FILE uploaded successfully!');
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            setIsError(true);
+            setErrorMessage(error.response?.data?.detail || 'An error occurred during file upload');
+        }
+    };
+
+    const uploadURL = async () => {
+        console.log('Uploading URL...');
+        if (!url || !course) {
+            setIsError(true);
+            setErrorMessage('Please provide a URL and specify the course');
+            console.error('Error: Please provide a URL and specify the course');
+            return;
+        }
+        setIsError(false);
+        setStatusMessage('Uploading URL...');
+        const formData = new FormData();
+        formData.append('url', url);
+        formData.append('course_name', course);
 
         try {
-            const response = await axios.post(`http://127.0.0.1:8000/ingest_data/uploadfile/`, formData);
+            const response = await axios.post('http://127.0.0.1:8000/ingest_data/downloadlink/', formData);
             console.log(response.data);
-            setStatusMessage(`${uploadType.toUpperCase()} uploaded successfully!`);
+            setStatusMessage('URL uploaded successfully!');
         } catch (error) {
-            console.error(`Error uploading ${uploadType}:`, error);
+            console.error('Error uploading URL:', error);
             setIsError(true);
-            setErrorMessage(error.response?.data?.detail || `An error occurred during ${uploadType} upload`);
+            setErrorMessage(error.response?.data?.detail || 'An error occurred during URL upload');
+        }
+    };
+
+    const uploadText = async () => {
+        console.log('Uploading text...');
+        if (!text || !course) {
+            setIsError(true);
+            setErrorMessage('Please provide text and specify the course');
+            console.error('Error: Please provide text and specify the course');
+            return;
+        }
+        setIsError(false);
+        setStatusMessage('Uploading text...');
+        const formData = new FormData();
+        formData.append('course_name', course);
+        formData.append('description', ''); 
+        formData.append('common_questions', ''); 
+        formData.append('topic', ''); 
+        formData.append('text', text);
+    
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/ingest_data/add_text_knowledge_base/', formData);
+            console.log(response.data);
+            setStatusMessage('TEXT uploaded successfully!');
+        } catch (error) {
+            console.error('Error uploading text:', error);
+            setIsError(true);
+            setErrorMessage(error.response?.data?.detail || 'An error occurred during text upload');
+        }
+    };    
+
+    // Choose the upload function based on the upload type
+    const uploadContent = () => {
+        switch (uploadType) {
+            case 'file':
+                uploadFile();
+                break;
+            case 'url':
+                uploadURL();
+                break;
+            case 'text':
+                uploadText();
+                break;
+            default:
+                setIsError(true);
+                setErrorMessage('Invalid upload type');
+                console.error('Error: Invalid upload type');
+                break;
         }
     };
 
@@ -80,7 +138,7 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
                             fullWidth
                         />
                     )}
-                    {uploadType === 'file' && (
+                    {['file', 'url', 'text'].includes(uploadType) && (
                         <TextField
                             label="Course"
                             variant="outlined"
