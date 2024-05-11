@@ -169,7 +169,7 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
                     {isError && (
                         <Typography color="error" sx={{ mt: 2 }}>
                             {errorMessage}
-                        ///</Typography>
+                        </Typography>
                     )}
                     {!isError && statusMessage && (
                         <Typography color="primary" sx={{ mt: 2 }}>
