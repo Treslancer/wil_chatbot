@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import { useState } from "react";
+import axios from './axiosConfig';
 import { Button, Dialog, DialogContent, DialogTitle, DialogActions, Box, Typography, TextField } from "@mui/material";
 
 const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
