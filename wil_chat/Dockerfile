@@ -13,4 +13,4 @@ COPY ./app /app/services
 
 EXPOSE 5000
 
-CMD ["fastapi", "run", "/app/app/main.py", "--port", "5000"]
+CMD ["fastapi", "run", "app.main:app", "--port", "5000"]

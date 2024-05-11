@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
     image: chat
     container_name: chat
+    working_dir: /app
     ports:
       - 5000:5000
     networks:
@@ -17,6 +18,7 @@ services:
       dockerfile: Dockerfile
     image: dashboard
     container_name: dashboard
+    working_dir: /app
     ports:
       - 3000:3000
     networks:
