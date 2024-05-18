@@ -1,5 +1,5 @@
 import { FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage, Delete, WindowSharp } from "@mui/icons-material";
-import { Box, IconButton, Paper, Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow } from "@mui/material";
+import { Box, IconButton, Paper, Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useState, useEffect } from "react";
 import { styled } from "@mui/system";
 import axiosInstance from '../../axiosConfig';
@@ -62,7 +62,7 @@ function TablePaginationActions(props) {
     );
 }
 
-const rowHeaders = ["FILENAME", "AUTHOR", "DATE"]
+const rowHeaders = ["FILENAME", "COURSE"]
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
     background: "rgba(255, 255, 255, 0.5)",
@@ -75,27 +75,38 @@ function DisplayTable() {
     //data
     const [data, setData] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(6);
     const [truefname, setTruefname] = useState('');
     const [openDeleteFileWin, setOpenDeleteFileWin] = useState(false);
+    const [filteredCourse, setFilteredCourse] = useState('');
+    const [allCourses, setAllCourses] = useState([]);
     
+    const fetchData = async () => {
+        try {
+            const response = await axiosInstance.get('https://chatbot-private.onrender.com/knowledge_base/get_files');
+            const courses = response.data;
+            var updatedFiles = []
+            var updatedCourses = new Set()
+
+            Object.keys(courses).forEach(course => {
+                console.log(`${course}: ${courses[course]}`);
+                courses[course].forEach(filename => {
+                    updatedFiles.push({
+                        course: course,
+                        filename: filename
+                    })
+                    updatedCourses.add(course);
+                })
+            });
+
+            setAllCourses(Array.from(updatedCourses));
+            setData(updatedFiles);
+        } catch (error) {
+            console.error('Error fetching data', error);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axiosInstance.get('http://0.0.0.0:5000/get_filename');
-                const fileNames = response.data.fileNames;
-
-                const updatedTransactionHistory = fileNames.map(filename => ({
-                    filename: filename,
-                    author: "Unknown",
-                    date: "2021-11-08"
-                }));
-
-                setData(updatedTransactionHistory);
-            } catch (error) {
-                console.error('Error fetching data', error);
-            }
-        };
 
         fetchData(); // Call the fetchData function when the component mounts
 
@@ -103,10 +114,14 @@ function DisplayTable() {
 
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - transactionhistory.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
+    };
+
+    const handleCourseChange = (event) => {
+        setFilteredCourse(event.target.value);
     };
 
     const setDeleteFileDialog = (filename) => 
@@ -120,8 +135,26 @@ function DisplayTable() {
         }
     };
 
+    const filteredData = filteredCourse ? data.filter(item => item.course === filteredCourse) : data;
+
     return(
         <StyledPaper>
+            <FormControl fullWidth>
+                <InputLabel id="course-select-label">Filter by Course</InputLabel>
+                <Select
+                    labelId="course-select-label"
+                    id="course-select"
+                    value={filteredCourse}
+                    label="Filter by Course"
+                    onChange={handleCourseChange}
+                    sx={{textAlign: 'left'}}
+                >
+                    <MenuItem value=""><em>All</em></MenuItem>
+                    {allCourses.map((course, index) => (
+                        <MenuItem key={index} value={course}>{course}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
             <Table aria-label="simple table">
                 <TableHead>
                     <TableRow sx={{ borderBottom: "2px solid #ffdd00" }}>
@@ -138,26 +171,22 @@ function DisplayTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                        const itemDate = new Date(row.date);
-                        itemDate.setDate(itemDate.getDate());
+                    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                     return(
                         <TableRow key={index}>
                             <TableCell component="th" scope="row" sx={{color: "black"}}>
                                 {row.filename}
                             </TableCell>
                             <TableCell sx={{color: "black"}}>
-                                {row.author}
-                            </TableCell>
-                            <TableCell sx={{color: "black"}}>
-                                {itemDate.toISOString().split("T")[0]/*dateOnly*/}
+                                {row.course}
                             </TableCell>
                             <TableCell>
-                                <IconButton onClick={() => setDeleteFileDialog(row.filename)} sx={{ color: "white" }}>
+                                <IconButton onClick={() => setDeleteFileDialog(row.filename, row.course_name)} sx={{ color: "white" }}>
                                     <DeleteFileDialog
                                         isOpen = {openDeleteFileWin}
                                         truefname = {truefname}
                                         filename = {row.filename}
+                                        course = {row.course}
                                         closeDialog = {setDeleteFileDialog}/> 
                                     <Delete style={{ color: 'black' }}/>
                                 </IconButton>
@@ -177,7 +206,7 @@ function DisplayTable() {
                             labelRowsPerPage=''
                             rowsPerPageOptions={[]}
                             colSpan={3}
-                            count={data.length}
+                            count={filteredData.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
                             sx={{ color: "black" }}

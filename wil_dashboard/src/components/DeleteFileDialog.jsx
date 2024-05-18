@@ -8,8 +8,8 @@ const DeleteFileDialog = (props) => {
 
     const handleSave = async () => {
         try {
-            const response = await axiosInstance.delete('http://0.0.0.0:5000/delete_item', {
-              data: { item: props.filename }, // Pass the item name in the request body
+            const response = await axiosInstance.delete('https://chatbot-private.onrender.com/knowledge_base/'+props.filename+'/', {
+                params: { course_name: props.course }
             });
       
             console.log(response.data); // Log the server response message
@@ -29,7 +29,7 @@ const DeleteFileDialog = (props) => {
     };
 
     return (
-        <>{console.log(props.filename + " | " + props.truefname)}
+        <>{console.log(props.filename + " | ")}
             <Dialog open={props.filename === props.truefname && props.isOpen ? true : false }>
                 <DialogTitle sx={{ fontWeight: 'bold' }}>DELETE FILE</DialogTitle>
                 <DialogContent>

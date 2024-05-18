@@ -7,6 +7,7 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
     const [course, setCourse] = useState("");
     const [url, setUrl] = useState("");
     const [text, setText] = useState("");
+    const [topic, setTopic] = useState("");
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [statusMessage, setStatusMessage] = useState('');
@@ -27,6 +28,10 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
         setText(event.target.value);
     };
 
+    const handleTopicChange = (event) => {
+        setTopic(event.target.value)
+    }
+
     const uploadFile = async () => {
         console.log('Uploading file...');
         if (!file || !course) {
@@ -39,10 +44,11 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
         setStatusMessage('Uploading file...');
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('course_name', course);
         
         try {
-            const response = await axiosInstance.post('http://0.0.0.0:8000/ingest_data/uploadfile/', formData);
+            const response = await axiosInstance.post('https://chatbot-private.onrender.com/ingest_data/uploadfile/', formData, {
+                params: { course_name: course }
+            });
             console.log(response.data);
             setStatusMessage('FILE uploaded successfully!');
         } catch (error) {
@@ -63,11 +69,14 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
         setIsError(false);
         setStatusMessage('Uploading URL...');
         const formData = new FormData();
-        formData.append('url', url);
-        formData.append('course_name', course);
 
         try {
-            const response = await axiosInstance.post('http://0.0.0.0:8000/ingest_data/downloadlink/', formData);
+            const response = await axiosInstance.post('https://chatbot-private.onrender.com/ingest_data/downloadlink/', formData, {
+                params: {
+                    download_link: url,
+                    course_name: course
+                }
+            });
             console.log(response.data);
             setStatusMessage('URL uploaded successfully!');
         } catch (error) {
@@ -87,15 +96,17 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
         }
         setIsError(false);
         setStatusMessage('Uploading text...');
-        const formData = new FormData();
-        formData.append('course_name', course);
-        formData.append('description', ''); 
-        formData.append('common_questions', ''); 
-        formData.append('topic', ''); 
-        formData.append('text', text);
+
+        const data = {
+            topic: topic,
+            text: text
+        };
     
         try {
-            const response = await axiosInstance.post('http://0.0.0.0:8000/ingest_data/add_text_knowledge_base/', formData);
+            const response = await axiosInstance.post('https://chatbot-private.onrender.com/ingest_data/add_text_knowledge_base/', data, {
+                params: { course_name: course },
+                headers: { 'Content-Type': 'application/json'   }
+            });
             console.log(response.data);
             setStatusMessage('TEXT uploaded successfully!');
         } catch (error) {
@@ -129,15 +140,7 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
         <Dialog open={isOpen} onClose={closeDialog}>
             <DialogTitle sx={{ fontWeight: 'bold' }}>UPLOAD {uploadType.toUpperCase()}</DialogTitle>
             <DialogContent>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-                    {uploadType === 'file' && (
-                        <TextField
-                            type="file"
-                            onChange={handleFileChange}
-                            variant="outlined"
-                            fullWidth
-                        />
-                    )}
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2, width: '500px' }}>
                     {['file', 'url', 'text'].includes(uploadType) && (
                         <TextField
                             label="Course"
@@ -145,6 +148,14 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
                             fullWidth
                             value={course}
                             onChange={handleCourseChange}
+                        />
+                    )}
+                    {uploadType === 'file' && (
+                        <TextField
+                            type="file"
+                            onChange={handleFileChange}
+                            variant="outlined"
+                            fullWidth
                         />
                     )}
                     {uploadType === 'url' && (
@@ -158,14 +169,33 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
                     )}
                     {uploadType === 'text' && (
                         <TextField
-                            label="Input Text"
+                            label="Topic"
                             variant="outlined"
                             fullWidth
+                            value={topic}
+                            onChange={handleTopicChange}
+                        />
+                    )}
+                    {uploadType === 'text' && (
+                        <TextField
+                            label="Input Text"
+                            variant="standard"
+                            multiline
                             value={text}
                             onChange={handleTextChange}
                         />
                     )}
-                    <Button onClick={uploadContent} color="primary" variant="contained">Upload {uploadType.toUpperCase()}</Button>
+                    <Button
+                        onClick={uploadContent}
+                        sx={{
+                            backgroundColor: '#ffdd00',
+                            color: 'black',
+                            fontWeight: 'bold',
+                            width: '240px',
+                            height: '40px',
+                            mr: '1rem' }}
+                    >
+                        Upload {uploadType.toUpperCase()}</Button>
                     {isError && (
                         <Typography color="error" sx={{ mt: 2 }}>
                             {errorMessage}

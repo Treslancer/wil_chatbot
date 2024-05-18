@@ -10,7 +10,7 @@ function NavBar() {
                 height: '64px',
                 alignItems: "center",
                 display: "flex",
-                zIndex: 2
+                zIndex: 2,
             }}>
             
             <h1>DASHBOARD</h1>
