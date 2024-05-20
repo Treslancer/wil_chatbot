@@ -1,16 +1,17 @@
-import { useState } from 'react'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from  'react-router-dom';
 import './App.css'
+import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <MainPage />
-      </div>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={ <LoginPage/> }/>
+        <Route path="/MainPage" element={ <MainPage/> }/>
+      </Routes>
+    </Router>
   )
 }
 

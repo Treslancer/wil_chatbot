@@ -46,7 +46,7 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
         formData.append('file', file);
         
         try {
-            const response = await axiosInstance.post('https://chatbot-private.onrender.com/ingest_data/uploadfile/', formData, {
+            const response = await axiosInstance.post('https://renderv2-gntp.onrender.com/ingest_data/uploadfile/', formData, {
                 params: { course_name: course }
             });
             console.log(response.data);
@@ -71,7 +71,7 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
         const formData = new FormData();
 
         try {
-            const response = await axiosInstance.post('https://chatbot-private.onrender.com/ingest_data/downloadlink/', formData, {
+            const response = await axiosInstance.post('https://renderv2-gntp.onrender.com/ingest_data/downloadlink/', formData, {
                 params: {
                     download_link: url,
                     course_name: course

@@ -1,5 +1,7 @@
-import { FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage, Delete, WindowSharp } from "@mui/icons-material";
-import { Box, IconButton, Paper, Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage, Delete } from "@mui/icons-material";
+import { Box, IconButton, Paper, Table, TableBody, TableCell, TableFooter,
+        TableHead, TablePagination, TableRow, FormControl, InputLabel,
+        Select, MenuItem, CircularProgress, LinearProgress } from "@mui/material";
 import { useState, useEffect } from "react";
 import { styled } from "@mui/system";
 import axiosInstance from '../../axiosConfig';
@@ -72,7 +74,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 function DisplayTable() {
-    //data
     const [data, setData] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
@@ -80,37 +81,50 @@ function DisplayTable() {
     const [openDeleteFileWin, setOpenDeleteFileWin] = useState(false);
     const [filteredCourse, setFilteredCourse] = useState('');
     const [allCourses, setAllCourses] = useState([]);
-    
-    const fetchData = async () => {
+    const [loading, setLoading] = useState(false);
+
+    const fetchCourses = async () => {
         try {
-            const response = await axiosInstance.get('https://chatbot-private.onrender.com/knowledge_base/get_files');
-            const courses = response.data;
-            var updatedFiles = []
-            var updatedCourses = new Set()
-
-            Object.keys(courses).forEach(course => {
-                console.log(`${course}: ${courses[course]}`);
-                courses[course].forEach(filename => {
-                    updatedFiles.push({
-                        course: course,
-                        filename: filename
-                    })
-                    updatedCourses.add(course);
-                })
-            });
-
-            setAllCourses(Array.from(updatedCourses));
-            setData(updatedFiles);
-        } catch (error) {
-            console.error('Error fetching data', error);
+            const response = await axiosInstance.get(`https://chatbot-private.onrender.com/knowledge_base/get_course/`);
+            
+            if (response.status === 200) {
+                const courses = response.data;
+                setAllCourses(courses)
+            } else {
+                throw new Error('Failed to fetch data');
+            }
+        } catch(error) {
+            console.error(error);
         }
     };
 
+    const handleCourseChange = async (event) => {
+        const value = event.target.value;
+        setLoading(true);
+    
+        try {
+            const response = await axiosInstance.get(`https://chatbot-private.onrender.com/knowledge_base/get_files_by_course/`, {
+                params: { course_name: value }
+            });
+            if (response.status === 200) {
+                const data = response.data;
+                setFilteredCourse(value);
+                setData(data);
+            } else {
+                throw new Error('Failed to fetch data');
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+      };
+
     useEffect(() => {
 
-        fetchData(); // Call the fetchData function when the component mounts
+        fetchCourses();
 
-    }, []); // Empty dependency array to run the effect only once
+    }, []);
 
 
     // Avoid a layout jump when reaching the last page with empty rows.
@@ -118,10 +132,6 @@ function DisplayTable() {
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
-    };
-
-    const handleCourseChange = (event) => {
-        setFilteredCourse(event.target.value);
     };
 
     const setDeleteFileDialog = (filename) => 
@@ -135,26 +145,27 @@ function DisplayTable() {
         }
     };
 
-    const filteredData = filteredCourse ? data.filter(item => item.course === filteredCourse) : data;
-
     return(
         <StyledPaper>
             <FormControl fullWidth>
-                <InputLabel id="course-select-label">Filter by Course</InputLabel>
+                <InputLabel id="course-select-label">Select Course</InputLabel>
                 <Select
                     labelId="course-select-label"
                     id="course-select"
-                    value={filteredCourse}
-                    label="Filter by Course"
+                    label="Select Course"
                     onChange={handleCourseChange}
                     sx={{textAlign: 'left'}}
                 >
-                    <MenuItem value=""><em>All</em></MenuItem>
                     {allCourses.map((course, index) => (
                         <MenuItem key={index} value={course}>{course}</MenuItem>
                     ))}
                 </Select>
             </FormControl>
+            {loading ? (
+                <Box display="flex" justifyContent="center" alignItems="center" height="5rem">
+                    <CircularProgress sx={{ color: '#ffdd00' }}/>
+                </Box>
+            ) : (
             <Table aria-label="simple table">
                 <TableHead>
                     <TableRow sx={{ borderBottom: "2px solid #ffdd00" }}>
@@ -171,22 +182,22 @@ function DisplayTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                    {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((course, index) => {
                     return(
                         <TableRow key={index}>
                             <TableCell component="th" scope="row" sx={{color: "black"}}>
-                                {row.filename}
+                                {course}
                             </TableCell>
                             <TableCell sx={{color: "black"}}>
-                                {row.course}
+                                {filteredCourse}
                             </TableCell>
                             <TableCell>
-                                <IconButton onClick={() => setDeleteFileDialog(row.filename, row.course_name)} sx={{ color: "white" }}>
+                                <IconButton onClick={() => setDeleteFileDialog(course, filteredCourse)} sx={{ color: "white" }}>
                                     <DeleteFileDialog
                                         isOpen = {openDeleteFileWin}
                                         truefname = {truefname}
-                                        filename = {row.filename}
-                                        course = {row.course}
+                                        filename = {course}
+                                        course = {filteredCourse}
                                         closeDialog = {setDeleteFileDialog}/> 
                                     <Delete style={{ color: 'black' }}/>
                                 </IconButton>
@@ -206,7 +217,7 @@ function DisplayTable() {
                             labelRowsPerPage=''
                             rowsPerPageOptions={[]}
                             colSpan={3}
-                            count={filteredData.length}
+                            count={data.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
                             sx={{ color: "black" }}
@@ -216,6 +227,7 @@ function DisplayTable() {
                     </TableRow>
                 </TableFooter>
             </Table>
+            )}
         </StyledPaper>
     );
 }
