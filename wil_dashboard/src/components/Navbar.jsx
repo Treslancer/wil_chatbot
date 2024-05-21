@@ -1,6 +1,6 @@
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
-function NavBar() {
+function NavBar({ setLoggedOut }) {
 
     return (
         <Box
@@ -17,6 +17,18 @@ function NavBar() {
             <Box sx={{ ml: '20px' }}>
                 <img src="./src/assets/Logo.png" style={{ width: '70px' }}/>
             </Box>
+            <div style={{ width: 'inherit', display: 'flex', flexDirection: 'row-reverse' }}>
+                <Button
+                    onClick={() => {
+                        localStorage.setItem('token','');
+                        setLoggedOut(true);
+                    }}
+                    sx={{ backgroundColor: 'white',
+                    color: '#ffdd00', fontWeight: 'bold',
+                    width: '240px', height: '40px', fontSize: '18px' }}>
+                    Logout
+                </Button>
+            </div>
 
         </Box>
     )

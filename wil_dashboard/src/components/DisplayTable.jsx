@@ -73,7 +73,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
     color: "white"
 }));
 
-function DisplayTable() {
+function DisplayTable({ setConversationCount, setMessageCount }) {
     const [data, setData] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
@@ -82,10 +82,64 @@ function DisplayTable() {
     const [filteredCourse, setFilteredCourse] = useState('');
     const [allCourses, setAllCourses] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [conversationFetchLoading, setConversationFetchLoading] = useState(false);
+    const [messageFetchLoading, setMessageFetchLoading] = useState(false);
+
+    useEffect(() => {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = currentDate.getDate();
+        const startDateTime = `${year}-${month}-${day}`+`T00:00:01Z`
+        const endDateTime = `${year}-${month}-${day}`+`T11:59:59Z`
+
+        const fetchConversationCount = async () => {
+            setConversationFetchLoading(true);
+            try {
+                const response = await axiosInstance.get('https://renderv2-gntp.onrender.com/stats/conversation-count', {
+                    params: {
+                        course_name: filteredCourse,
+                    }
+                })
+                const data = response.data;
+
+                setConversationCount(data.conversation_count)
+            } catch(error) {
+                console.error(error);
+                setConversationCount(0);
+            } finally {
+                setConversationFetchLoading(false);
+            }
+        }
+
+        const fetchMessageCount = async () => {
+            setMessageFetchLoading(true);
+            try {
+                const response = await axiosInstance.get('https://renderv2-gntp.onrender.com/stats/message-count', {
+                    params: {
+                        course_name: filteredCourse,
+                        start_date: startDateTime,
+                        end_date: endDateTime,
+                    }
+                })
+                const data = response.data;
+
+                setMessageCount(data.message_count)
+            } catch(error) {
+                console.error(error);
+                setMessageCount(0);
+            } finally {
+                setMessageFetchLoading(false);
+            }
+        }
+
+        fetchConversationCount();
+        fetchMessageCount();
+    }, [filteredCourse])
 
     const fetchCourses = async () => {
         try {
-            const response = await axiosInstance.get(`https://chatbot-private.onrender.com/knowledge_base/get_course/`);
+            const response = await axiosInstance.get(`https://renderv2-gntp.onrender.com/knowledge_base/get_course/`);
             
             if (response.status === 200) {
                 const courses = response.data;
@@ -103,7 +157,7 @@ function DisplayTable() {
         setLoading(true);
     
         try {
-            const response = await axiosInstance.get(`https://chatbot-private.onrender.com/knowledge_base/get_files_by_course/`, {
+            const response = await axiosInstance.get(`https://renderv2-gntp.onrender.com/knowledge_base/get_files/`, {
                 params: { course_name: value }
             });
             if (response.status === 200) {

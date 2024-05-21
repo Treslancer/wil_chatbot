@@ -9,6 +9,7 @@ import StatCards from '../components/StatCards';
 
 function MainPage() {
     const navigate = useNavigate();
+    const [loggedOut, setLoggedOut] = useState(false);
     
     useEffect(() => {
         const verifyToken = async () => {
@@ -16,15 +17,18 @@ function MainPage() {
             console.log(usertoken);
 
             const formData = new FormData();
-
+            
             try {
+                if (loggedOut) {
+                    console.log('Logged out');
+                    localStorage.removeItem('token');
+                    navigate('/');
+                    return
+                }
+
                 const response = await axiosInstance.post(`https://renderv2-gntp.onrender.com/verify_user`, formData, {
                     params: { token: usertoken}
                 });
-                
-                if (response.status !== 200) {
-                    throw new Error('Token verification failed');
-                }
             } catch(error) {
                 console.error(error);
                 localStorage.removeItem('token');
@@ -33,11 +37,13 @@ function MainPage() {
         };
 
         verifyToken();
-    }, [navigate]);
+    }, [navigate, loggedOut]);
 
     const [openUploadFileWin, setOpenUploadFileWin] = useState(false);
     const [openUploadTextWin, setOpenUploadTextWin] = useState(false);
     const [openUploadUrlWin, setOpenUploadUrlWin] = useState(false);
+    const [conversationCount, setConversationCount] = useState(0);
+    const [messageCount, setMessageCount] = useState(0);
     const [scrapedData, setScrapedData] = useState([]);
 
     // Function to toggle upload dialog visibility
@@ -49,7 +55,7 @@ function MainPage() {
 
     return (
         <Box sx={{ display: 'flex' }}>
-            <NavBar />
+            <NavBar setLoggedOut={setLoggedOut}/>
             <Box
                 position='relative'
                 sx={{
@@ -59,12 +65,16 @@ function MainPage() {
                     width: "90%",
                     mt: '4rem',
                 }}>
+                <div style={{ marginBottom: '5rem', display: 'flex', flexDirection: 'row' }}>
+                    <StatCards cardTitle = 'Conversations' count = {conversationCount}/>
+                    <StatCards cardTitle = 'Messages' count = {messageCount}/>
+                </div>
 
                 <h2 style={{textAlign: 'left', marginTop: '0px', position: 'absolute'}}>KNOWLEDGE BASE</h2>
                 <div style={{marginBottom: '1.5rem', display: 'flex', flexDirection: 'row-reverse'}}>
                     <Button
                         onClick={() => setUploadFileDialog('file')}
-                        sx={{ backgroundColor: '#ffdd00', color: 'black', fontWeight: 'bold', width: '240px', height: '40px', mr: '1rem' }}
+                        sx={{ backgroundColor: '#ffdd00', color: 'black', fontWeight: 'bold', width: '240px', height: '40px' }}
                     >
                         Upload File
                     </Button>
@@ -81,7 +91,7 @@ function MainPage() {
                         Upload Text
                     </Button>
                 </div>
-                <DisplayTable />
+                <DisplayTable setConversationCount={setConversationCount} setMessageCount={setMessageCount}/>
 
                 <h2 style={{ marginTop: '2.5rem',  }}>TBI UPDATES</h2>
                 {Array.isArray(scrapedData) && scrapedData.length > 0 ? (

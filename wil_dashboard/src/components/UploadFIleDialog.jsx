@@ -103,7 +103,7 @@ const UploadFileDialog = ({ isOpen, closeDialog, uploadType }) => {
         };
     
         try {
-            const response = await axiosInstance.post('https://chatbot-private.onrender.com/ingest_data/add_text_knowledge_base/', data, {
+            const response = await axiosInstance.post('https://renderv2-gntp.onrender.com/ingest_data/add_text_knowledge_base/', data, {
                 params: { course_name: course },
                 headers: { 'Content-Type': 'application/json'   }
             });
