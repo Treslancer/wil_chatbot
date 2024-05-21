@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../axiosConfig';
-import { Box, Button } from "@mui/material";
+import { Box, Button, Alert } from "@mui/material";
 import NavBar from '../components/Navbar';
-import DisplayTable from "../components/DisplayTable";
+import FileTable from "../components/FileTable";
 import UploadFileDialog from '../components/UploadFIleDialog';
 import StatCards from '../components/StatCards';
-import { BungalowTwoTone } from '@mui/icons-material';
+import PostList from '../components/PostList';
 
 function MainPage() {
     const navigate = useNavigate();
@@ -62,6 +62,18 @@ function MainPage() {
         if (dialogType === 'url') setOpenUploadUrlWin(!openUploadUrlWin);
     };
     
+    const handleIngest = async () => {
+        const formData = new URLSearchParams();
+
+        try {
+            const response = await axiosInstance.post(`https://renderv2-gntp.onrender.com/ingest_data/ingest_facebook_posts`, formData, {
+                params: { course_name: selectedCourse }
+            })
+        } catch(error) {
+            console.error(error);
+        }
+    }
+    
     if (verified) {
     return (
         <Box sx={{ display: 'flex' }}>
@@ -102,23 +114,26 @@ function MainPage() {
                         Upload Text
                     </Button>
                 </div>
-                <DisplayTable
+                <FileTable
                     setConversationCount={setConversationCount}
                     setMessageCount={setMessageCount}
                     setConversationFetchLoading={setConversationFetchLoading}
                     setMessageFetchLoading={setMessageFetchLoading}
                     setFileCount={setFileCount}
-                    setFileFetchLoading={setFileFetchLoading}/>
+                    setFileFetchLoading={setFileFetchLoading}
+                    setSelectedCourse={setSelectedCourse}/>
 
                 <h2 style={{textAlign: 'left', marginTop: '0px', position: 'absolute'}}>TBI UPDATES</h2>
                 <div style={{marginBottom: '1.5rem', display: 'flex', flexDirection: 'row-reverse'}}>
                     <Button
+                        onClick={() => {handleIngest()}}
                         sx={{ backgroundColor: '#ffdd00', color: 'black', fontWeight: 'bold', width: '240px', height: '40px' }}
                     >
                         Ingest
                     </Button>
                 </div>
-                
+                <PostList
+                    selectedCourse={selectedCourse}/>
             </Box>
 
             <UploadFileDialog

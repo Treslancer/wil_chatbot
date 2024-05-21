@@ -73,12 +73,13 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
     color: "white"
 }));
 
-function DisplayTable({ setConversationCount,
+function FileTable({ setConversationCount,
                         setMessageCount,
                         setConversationFetchLoading,
                         setMessageFetchLoading,
                         setFileCount,
-                        setFileFetchLoading }) {
+                        setFileFetchLoading,
+                        setSelectedCourse }) {
     const [data, setData] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
@@ -167,6 +168,7 @@ function DisplayTable({ setConversationCount,
             if (response.status === 200) {
                 const data = response.data;
                 setFilteredCourse(value);
+                setSelectedCourse(value);
                 setFileCount(data.length)
                 setData(data);
             } else {
@@ -292,4 +294,4 @@ function DisplayTable({ setConversationCount,
     );
 }
 
-export default DisplayTable;
+export default FileTable;
