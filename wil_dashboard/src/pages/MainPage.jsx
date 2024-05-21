@@ -1,25 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../axiosConfig';
-import { Box, Button, Card, List, ListItem, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import NavBar from '../components/Navbar';
 import DisplayTable from "../components/DisplayTable";
 import UploadFileDialog from '../components/UploadFIleDialog';
 import StatCards from '../components/StatCards';
+import { BungalowTwoTone } from '@mui/icons-material';
 
 function MainPage() {
     const navigate = useNavigate();
     const [loggedOut, setLoggedOut] = useState(false);
+    const [verified, setVerified] = useState(false);
     
     useEffect(() => {
         const verifyToken = async () => {
+            
             const usertoken = localStorage.getItem('token');
             console.log(usertoken);
-
-            const formData = new FormData();
+            const formData = new URLSearchParams();
             
             try {
                 if (loggedOut) {
+                    setVerified(false)
                     console.log('Logged out');
                     localStorage.removeItem('token');
                     navigate('/');
@@ -29,6 +32,8 @@ function MainPage() {
                 const response = await axiosInstance.post(`https://renderv2-gntp.onrender.com/verify_user`, formData, {
                     params: { token: usertoken}
                 });
+
+                setVerified(true);
             } catch(error) {
                 console.error(error);
                 localStorage.removeItem('token');
@@ -48,15 +53,16 @@ function MainPage() {
     const [conversationFetchLoading, setConversationFetchLoading] = useState(false);
     const [messageFetchLoading, setMessageFetchLoading] = useState(false);
     const [fileFetchLoading, setFileFetchLoading] = useState(false);
-    const [scrapedData, setScrapedData] = useState([]);
-
+    const [selectedCourse, setSelectedCourse] = useState('')
+;
     // Function to toggle upload dialog visibility
     const setUploadFileDialog = (dialogType) => {
         if (dialogType === 'file') setOpenUploadFileWin(!openUploadFileWin);
         if (dialogType === 'text') setOpenUploadTextWin(!openUploadTextWin);
         if (dialogType === 'url') setOpenUploadUrlWin(!openUploadUrlWin);
     };
-
+    
+    if (verified) {
     return (
         <Box sx={{ display: 'flex' }}>
             <NavBar setLoggedOut={setLoggedOut}/>
@@ -105,21 +111,14 @@ function MainPage() {
                     setFileFetchLoading={setFileFetchLoading}/>
 
                 <h2 style={{textAlign: 'left', marginTop: '0px', position: 'absolute'}}>TBI UPDATES</h2>
-                {Array.isArray(scrapedData) && scrapedData.length > 0 ? (
-                    <List style={{ display: 'flex', flexWrap: 'wrap', maxWidth: '90vw', overflow: 'hidden' }}>
-                        {scrapedData.map((p, index) => (
-                            <ListItem key={index} style={{ flexBasis: 'calc(16.666% - 20px)', margin: '10px' }}>
-                                <Card sx={{ width: '25vh', height: '50vh', maxHeight: 'fit-content', padding: '20px', borderTop: '2px solid #ffdd00' }}>
-                                    <Typography sx={{ fontWeight: 'bold' }}>
-                                        {p.text}
-                                    </Typography>
-                                </Card>
-                            </ListItem>
-                        ))}
-                    </List>
-                ) : (
-                    <p>No data available</p>
-                )}
+                <div style={{marginBottom: '1.5rem', display: 'flex', flexDirection: 'row-reverse'}}>
+                    <Button
+                        sx={{ backgroundColor: '#ffdd00', color: 'black', fontWeight: 'bold', width: '240px', height: '40px' }}
+                    >
+                        Ingest
+                    </Button>
+                </div>
+                
             </Box>
 
             <UploadFileDialog
@@ -139,6 +138,11 @@ function MainPage() {
             />
         </Box>
     );
+    } else {
+        return (
+            <></>
+        );
+    }
 }
 
 export default MainPage;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../axiosConfig';
-import { Box, TextField, Button } from '@mui/material';
+import { Box, TextField, Button, CircularProgress } from '@mui/material';
 import NavBar from '../components/Navbar';
 
 function LoginPage() {
@@ -87,12 +87,22 @@ function LoginPage() {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
+                    {loading ? (
+                    <Box display="flex" justifyContent="left" alignItems="center" height="5rem">
+                        <CircularProgress sx={{ color: '#ffdd00' }}/>
+                    </Box>
+                    ) : (
                     <Button
                         onClick={handleSubmit}
-                        sx={{ backgroundColor: '#ffdd00', color: 'black', fontWeight: 'bold', width: '240px', height: '40px', mr: '1rem' }}
-                    >
+                        sx={{ backgroundColor: '#ffdd00',
+                            color: 'black',
+                            fontWeight: 'bold',
+                            width: '240px',
+                            height: '40px',
+                            mr: '1rem' }}>
                         LOGIN
                     </Button>
+                    )}
                 </div>
             </Box>
         </Box>

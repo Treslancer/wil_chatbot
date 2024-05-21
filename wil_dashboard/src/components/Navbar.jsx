@@ -28,7 +28,7 @@ function NavBar({ setLoggedOut }) {
                         setLoggedOut(true);
                     }}
                     sx={{ backgroundColor: 'white',
-                    color: '#ffdd00', fontWeight: 'bold',
+                    color: 'black', fontWeight: 'bold',
                     width: '240px', height: '40px', fontSize: '18px' }}>
                     Logout
                 </Button>
