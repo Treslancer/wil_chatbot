@@ -6,37 +6,20 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import axiosInstance from '../../axiosConfig';
 
-function PostList(selectedCourse) {
-    const [data, setData] = useState([]);
+function PostList(props) {
+    const {posts} = props;
 
     useEffect(() => {
-        const fetchPosts = async () => {
-
-            const formData = new URLSearchParams();
-            console.log(selectedCourse);
-
-            try {
-                const response = await axiosInstance.get(`https://renderv2-gntp.onrender.com/knowledge_base/get_facebook_posts/`, {
-                    params: { course_name:  selectedCourse.selectedCourse}
-                });
-                const data = response.data;
-                setData(data);
-            } catch(error) {
-                console.error(error)
-            }
-        }
-
-        fetchPosts();
-    }, [selectedCourse])
+        console.log(posts);
+    })
 
     return (
         <List sx={{ width: '80vw', bgcolor: 'background.paper' }}>
-            {data.map((post, index) => {
+            {posts.map(post => {
             return (
-            <>
-            <ListItem alignItems="flex-start" key={index}>
+            <div >
+            <ListItem alignItems="flex-start">
                 <ListItemAvatar>
                     <Avatar
                         variant='rounded'
@@ -67,8 +50,7 @@ function PostList(selectedCourse) {
                 />
             </ListItem>
             <Divider variant="inset" component="li" />
-            </>
-            )})}
+            </div>)})}
         </List>
     );
 }

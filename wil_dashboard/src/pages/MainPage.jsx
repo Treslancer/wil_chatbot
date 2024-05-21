@@ -49,18 +49,37 @@ function MainPage() {
     const [openUploadUrlWin, setOpenUploadUrlWin] = useState(false);
     const [conversationCount, setConversationCount] = useState(0);
     const [messageCount, setMessageCount] = useState(0);
-    const [fileCount, setFileCount] = useState(0)
+    const [fileCount, setFileCount] = useState(0);
     const [conversationFetchLoading, setConversationFetchLoading] = useState(false);
     const [messageFetchLoading, setMessageFetchLoading] = useState(false);
     const [fileFetchLoading, setFileFetchLoading] = useState(false);
-    const [selectedCourse, setSelectedCourse] = useState('')
-;
+    const [selectedCourse, setSelectedCourse] = useState('');
+    const [posts, setPosts] = useState([]);
+
     // Function to toggle upload dialog visibility
     const setUploadFileDialog = (dialogType) => {
         if (dialogType === 'file') setOpenUploadFileWin(!openUploadFileWin);
         if (dialogType === 'text') setOpenUploadTextWin(!openUploadTextWin);
         if (dialogType === 'url') setOpenUploadUrlWin(!openUploadUrlWin);
     };
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            const formData = new URLSearchParams();
+
+            try {
+                const response = await axiosInstance.get(`https://renderv2-gntp.onrender.com/knowledge_base/get_facebook_posts/`, {
+                    params: { course_name:  selectedCourse}
+                });
+                const data = response.data;
+                setPosts(data);
+            } catch(error) {
+                console.error(error)
+            }
+        }
+
+        fetchPosts();
+    },[selectedCourse]);
     
     const handleIngest = async () => {
         const formData = new URLSearchParams();
@@ -133,7 +152,7 @@ function MainPage() {
                     </Button>
                 </div>
                 <PostList
-                    selectedCourse={selectedCourse}/>
+                    posts={posts}/>
             </Box>
 
             <UploadFileDialog
