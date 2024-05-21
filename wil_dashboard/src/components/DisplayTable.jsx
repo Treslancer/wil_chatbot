@@ -1,7 +1,7 @@
 import { FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage, Delete } from "@mui/icons-material";
 import { Box, IconButton, Paper, Table, TableBody, TableCell, TableFooter,
         TableHead, TablePagination, TableRow, FormControl, InputLabel,
-        Select, MenuItem, CircularProgress, LinearProgress } from "@mui/material";
+        Select, MenuItem, CircularProgress } from "@mui/material";
 import { useState, useEffect } from "react";
 import { styled } from "@mui/system";
 import axiosInstance from '../../axiosConfig';
@@ -73,7 +73,12 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
     color: "white"
 }));
 
-function DisplayTable({ setConversationCount, setMessageCount }) {
+function DisplayTable({ setConversationCount,
+                        setMessageCount,
+                        setConversationFetchLoading,
+                        setMessageFetchLoading,
+                        setFileCount,
+                        setFileFetchLoading }) {
     const [data, setData] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
@@ -82,8 +87,6 @@ function DisplayTable({ setConversationCount, setMessageCount }) {
     const [filteredCourse, setFilteredCourse] = useState('');
     const [allCourses, setAllCourses] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [conversationFetchLoading, setConversationFetchLoading] = useState(false);
-    const [messageFetchLoading, setMessageFetchLoading] = useState(false);
 
     useEffect(() => {
         const currentDate = new Date();
@@ -155,6 +158,7 @@ function DisplayTable({ setConversationCount, setMessageCount }) {
     const handleCourseChange = async (event) => {
         const value = event.target.value;
         setLoading(true);
+        setFileFetchLoading(true);
     
         try {
             const response = await axiosInstance.get(`https://renderv2-gntp.onrender.com/knowledge_base/get_files/`, {
@@ -163,6 +167,7 @@ function DisplayTable({ setConversationCount, setMessageCount }) {
             if (response.status === 200) {
                 const data = response.data;
                 setFilteredCourse(value);
+                setFileCount(data.length)
                 setData(data);
             } else {
                 throw new Error('Failed to fetch data');
@@ -171,6 +176,7 @@ function DisplayTable({ setConversationCount, setMessageCount }) {
             console.error(error);
         } finally {
             setLoading(false);
+            setFileFetchLoading(false);
         }
       };
 
@@ -200,7 +206,7 @@ function DisplayTable({ setConversationCount, setMessageCount }) {
     };
 
     return(
-        <StyledPaper>
+        <StyledPaper sx={{ marginBottom: '5rem'}}>
             <FormControl fullWidth>
                 <InputLabel id="course-select-label">Select Course</InputLabel>
                 <Select
@@ -236,21 +242,21 @@ function DisplayTable({ setConversationCount, setMessageCount }) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((course, index) => {
+                    {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((file, index) => {
                     return(
                         <TableRow key={index}>
                             <TableCell component="th" scope="row" sx={{color: "black"}}>
-                                {course}
+                                {file}
                             </TableCell>
                             <TableCell sx={{color: "black"}}>
                                 {filteredCourse}
                             </TableCell>
                             <TableCell>
-                                <IconButton onClick={() => setDeleteFileDialog(course, filteredCourse)} sx={{ color: "white" }}>
+                                <IconButton onClick={() => setDeleteFileDialog(file, filteredCourse)} sx={{ color: "white" }}>
                                     <DeleteFileDialog
                                         isOpen = {openDeleteFileWin}
                                         truefname = {truefname}
-                                        filename = {course}
+                                        filename = {file}
                                         course = {filteredCourse}
                                         closeDialog = {setDeleteFileDialog}/> 
                                     <Delete style={{ color: 'black' }}/>

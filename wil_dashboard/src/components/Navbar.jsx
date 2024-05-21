@@ -17,6 +17,10 @@ function NavBar({ setLoggedOut }) {
             <Box sx={{ ml: '20px' }}>
                 <img src="./src/assets/Logo.png" style={{ width: '70px' }}/>
             </Box>
+            {location.pathname === '/' ?
+            (
+                <></>
+            ) : (
             <div style={{ width: 'inherit', display: 'flex', flexDirection: 'row-reverse' }}>
                 <Button
                     onClick={() => {
@@ -29,7 +33,7 @@ function NavBar({ setLoggedOut }) {
                     Logout
                 </Button>
             </div>
-
+            )}
         </Box>
     )
 }

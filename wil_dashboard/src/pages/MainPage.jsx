@@ -44,6 +44,10 @@ function MainPage() {
     const [openUploadUrlWin, setOpenUploadUrlWin] = useState(false);
     const [conversationCount, setConversationCount] = useState(0);
     const [messageCount, setMessageCount] = useState(0);
+    const [fileCount, setFileCount] = useState(0)
+    const [conversationFetchLoading, setConversationFetchLoading] = useState(false);
+    const [messageFetchLoading, setMessageFetchLoading] = useState(false);
+    const [fileFetchLoading, setFileFetchLoading] = useState(false);
     const [scrapedData, setScrapedData] = useState([]);
 
     // Function to toggle upload dialog visibility
@@ -66,8 +70,9 @@ function MainPage() {
                     mt: '4rem',
                 }}>
                 <div style={{ marginBottom: '5rem', display: 'flex', flexDirection: 'row' }}>
-                    <StatCards cardTitle = 'Conversations' count = {conversationCount}/>
-                    <StatCards cardTitle = 'Messages' count = {messageCount}/>
+                    <StatCards cardTitle = 'Conversations' count = {conversationCount} loading = {conversationFetchLoading}/>
+                    <StatCards cardTitle = 'Messages' count = {messageCount} loading = {messageFetchLoading}/>
+                    <StatCards cardTitle = 'Files' count = {fileCount} loading = {fileFetchLoading}/>
                 </div>
 
                 <h2 style={{textAlign: 'left', marginTop: '0px', position: 'absolute'}}>KNOWLEDGE BASE</h2>
@@ -91,9 +96,15 @@ function MainPage() {
                         Upload Text
                     </Button>
                 </div>
-                <DisplayTable setConversationCount={setConversationCount} setMessageCount={setMessageCount}/>
+                <DisplayTable
+                    setConversationCount={setConversationCount}
+                    setMessageCount={setMessageCount}
+                    setConversationFetchLoading={setConversationFetchLoading}
+                    setMessageFetchLoading={setMessageFetchLoading}
+                    setFileCount={setFileCount}
+                    setFileFetchLoading={setFileFetchLoading}/>
 
-                <h2 style={{ marginTop: '2.5rem',  }}>TBI UPDATES</h2>
+                <h2 style={{textAlign: 'left', marginTop: '0px', position: 'absolute'}}>TBI UPDATES</h2>
                 {Array.isArray(scrapedData) && scrapedData.length > 0 ? (
                     <List style={{ display: 'flex', flexWrap: 'wrap', maxWidth: '90vw', overflow: 'hidden' }}>
                         {scrapedData.map((p, index) => (
