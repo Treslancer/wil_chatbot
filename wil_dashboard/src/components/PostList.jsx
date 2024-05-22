@@ -7,16 +7,46 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 
+// Custom function to format the datetime string
+const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    
+    // Define month names
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    // Get date components
+    const day = date.getDate();
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+    
+    // Format hours for 12-hour clock
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // The hour '0' should be '12'
+    
+    // Pad minutes and seconds with leading zeros if needed
+    const minutesStr = minutes < 10 ? '0' + minutes : minutes;
+    const secondsStr = seconds < 10 ? '0' + seconds : seconds;
+    
+    // Construct formatted date string
+    return `${month} ${day}, ${year} at ${hours}:${minutesStr}:${secondsStr} ${ampm}`;
+  };
+
 function PostList(props) {
     const {posts} = props;
-
-    useEffect(() => {
-        console.log(posts);
-    })
 
     return (
         <List sx={{ width: '80vw', bgcolor: 'background.paper' }}>
             {posts.map(post => {
+            
+            const formattedDate = formatDateTime(post.post_created);
+
             return (
             <div >
             <ListItem alignItems="flex-start">
@@ -30,7 +60,7 @@ function PostList(props) {
                     primary={
                         <React.Fragment>
                             <Typography variant='h6' sx={{ marginBottom: '1rem' }}>
-                                {post.post_created}
+                                {formattedDate}
                             </Typography>
                         </React.Fragment>
                     }
@@ -42,7 +72,7 @@ function PostList(props) {
                                 variant="h7"
                                 color="text.primary"
                             >
-                                Update: 
+                                Update:
                             </Typography>
                             {post.content}
                         </React.Fragment>
