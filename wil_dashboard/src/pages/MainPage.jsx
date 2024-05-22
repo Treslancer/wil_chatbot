@@ -170,8 +170,6 @@ function MainPage() {
                 </div>
                 <PostList
                     posts={posts} />
-
-                <Notif open={snack} />
             </Box>
 
             <UploadFileDialog
