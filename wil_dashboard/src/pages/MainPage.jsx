@@ -106,22 +106,16 @@ function MainPage() {
     return (
         <Box sx={{ display: 'flex' }}>
             <NavBar setLoggedOut={setLoggedOut} />
-            <Box
-                position='relative'
-                sx={{
-                    paddingTop: "64px",
-                    flexGrow: 1,
-                    height: "90%",
-                    width: "90%",
-                    mt: '4rem',
-                }}>
-                <div style={{ marginBottom: '5rem', display: 'flex', flexDirection: 'row' }}>
+            <Box position='relative' sx={{ paddingTop: "64px", flexGrow: 1, height: "90%", width: "90%", mt: '4rem' }}>
+                <div style={{ marginBottom: '5rem', display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                     <StatCards cardTitle='Conversations' count={conversationCount} loading={conversationFetchLoading} />
                     <StatCards cardTitle='Messages' count={messageCount} loading={messageFetchLoading} />
                     <StatCards cardTitle='Files' count={fileCount} loading={fileFetchLoading} />
                 </div>
 
-                <h2 style={{ textAlign: 'left', marginTop: '0px', position: 'absolute' }}>KNOWLEDGE BASE</h2>
+                <h2 style={{ textAlign: 'left', marginTop: '0px', position: 'absolute' }}>
+                    KNOWLEDGE BASE
+                </h2>
                 <div style={{ marginBottom: '1.5rem', display: 'flex', flexDirection: 'row-reverse' }}>
                     <Button
                         onClick={() => setUploadFileDialog('file')}
@@ -151,7 +145,9 @@ function MainPage() {
                     setFileFetchLoading={setFileFetchLoading}
                     setSelectedCourse={setSelectedCourse} />
 
-                <h2 style={{ textAlign: 'left', marginTop: '0px', position: 'absolute' }}>TBI UPDATES</h2>
+                <h2 style={{ textAlign: 'left', marginTop: '0px', position: 'absolute' }}>
+                    SNS UPDATES
+                </h2>
                 <div style={{ marginBottom: '1.5rem', display: 'flex', flexDirection: 'row-reverse' }}>
                     {ingesting ? (
                         <Box display="flex" justifyContent="center" alignItems="center" height="2.5rem" marginRight="6rem">

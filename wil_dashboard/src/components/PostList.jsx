@@ -1,4 +1,4 @@
-import React,{ useState, useEffect } from 'react';
+import React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
@@ -54,7 +54,7 @@ function PostList(props) {
                     <Avatar
                         variant='rounded'
                         src="./src/assets/Logo.png"
-                        sx={{ width: '50px', height: '50px', marginRight: '2rem' }}/>
+                        sx={{ width: '50px', height: '50px', marginRight: '1rem', marginLeft: '1rem' }}/>
                 </ListItemAvatar>
                 <ListItemText
                     primary={
@@ -72,9 +72,12 @@ function PostList(props) {
                                 variant="h7"
                                 color="text.primary"
                             >
-                                Update:
+                                {post.content}
                             </Typography>
-                            {post.content}
+
+                            <Typography sx={{ textAlign: 'right', fontSize: '12px', marginTop: '2rem' }}>
+                                {post.post_id}
+                            </Typography>
                         </React.Fragment>
                     }
                 />
