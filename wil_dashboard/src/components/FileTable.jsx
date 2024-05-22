@@ -106,6 +106,8 @@ function FileTable({ setConversationCount,
                 const response = await axiosInstance.get('https://renderv2-gntp.onrender.com/stats/conversation-count', {
                     params: {
                         course_name: filteredCourse,
+                        start_date: startDateTime,
+                        end_date: endDateTime,
                     }
                 })
                 const data = response.data;
