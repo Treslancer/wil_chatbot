@@ -29,7 +29,6 @@ function MainPage() {
         const verifyToken = async () => {
 
             const usertoken = localStorage.getItem('token');
-            console.log(usertoken);
             const formData = new URLSearchParams();
 
             try {
@@ -64,6 +63,8 @@ function MainPage() {
     };
 
     useEffect(() => {
+        if (selectedCourse === '') return
+
         const fetchPosts = async () => {
             const formData = new URLSearchParams();
 
@@ -101,7 +102,7 @@ function MainPage() {
             else setSnack(false);
         }
     }
-
+    
     if (verified) {
     return (
         <Box sx={{ display: 'flex' }}>
@@ -111,10 +112,17 @@ function MainPage() {
                     <StatCards cardTitle='Conversations' count={conversationCount} loading={conversationFetchLoading} />
                     <StatCards cardTitle='Messages' count={messageCount} loading={messageFetchLoading} />
                     <StatCards cardTitle='Files' count={fileCount} loading={fileFetchLoading} />
+                    <a href="https://www.youtube.com/watch?v=DLzxrzFCyOs">
+                    <img
+                        src='https://www.svgheart.com/wp-content/uploads/2021/11/walking-cat-silhouette-pet-free-svg-file-SvgHeart.Com-1.png'
+                        height={parent.height}
+                        style={{ height: '9rem' }}
+                    ></img>
+                    </a>
                 </div>
 
                 <h2 style={{ textAlign: 'left', marginTop: '0px', position: 'absolute' }}>
-                    KNOWLEDGE BASE
+                    KNOWLEDGEBASE
                 </h2>
                 <div style={{ marginBottom: '1.5rem', display: 'flex', flexDirection: 'row-reverse' }}>
                     <Button
@@ -143,6 +151,7 @@ function MainPage() {
                     setMessageFetchLoading={setMessageFetchLoading}
                     setFileCount={setFileCount}
                     setFileFetchLoading={setFileFetchLoading}
+                    selectedCourse={selectedCourse}
                     setSelectedCourse={setSelectedCourse} />
 
                 <h2 style={{ textAlign: 'left', marginTop: '0px', position: 'absolute' }}>

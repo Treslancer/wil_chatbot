@@ -79,6 +79,7 @@ function FileTable({ setConversationCount,
                         setMessageFetchLoading,
                         setFileCount,
                         setFileFetchLoading,
+                        selectedCourse,
                         setSelectedCourse }) {
     const [data, setData] = useState([]);
     const [page, setPage] = useState(0);
@@ -90,6 +91,8 @@ function FileTable({ setConversationCount,
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        if (filteredCourse === '') return
+
         const currentDate = new Date();
         const year = currentDate.getFullYear();
         const month = String(currentDate.getMonth() + 1).padStart(2, '0');
@@ -215,6 +218,7 @@ function FileTable({ setConversationCount,
                     labelId="course-select-label"
                     id="course-select"
                     label="Select Course"
+                    value={selectedCourse}
                     onChange={handleCourseChange}
                     sx={{textAlign: 'left'}}
                 >
