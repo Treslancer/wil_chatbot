@@ -24,6 +24,8 @@ function MainPage() {
     const [selectedCourse, setSelectedCourse] = useState('');
     const [posts, setPosts] = useState([]);
     const [ingesting, setIngesting] = useState(false);
+    const [ingestInterval, setIngestInterval] = useState(30);
+    const [seconds, setSeconds] = useState(ingestInterval); // Timer in seconds
 
     useEffect(() => {
         const verifyToken = async () => {
@@ -82,26 +84,35 @@ function MainPage() {
         fetchPosts();
     }, [selectedCourse]);
 
-    const [snack, setSnack] = useState(false);
-
     const handleIngest = async () => {
+        if (selectedCourse === '') throw new Error('No Selected Course')
         setIngesting(true);
 
         const formData = new URLSearchParams();
 
         try {
             const response = await axiosInstance.post(`https://renderv2-gntp.onrender.com/ingest_data/ingest_facebook_posts`, formData, {
-                params: { course_name: selectedCourse }
+                params: { subject: selectedCourse }
             })
         } catch (error) {
             console.error(error);
         } finally {
             console.log('Something should show up by now')
             setIngesting(false);
-            if (snack === false) setSnack(true)
-            else setSnack(false);
         }
     }
+
+    useEffect(() => {
+        if (seconds === 0) {
+            setSeconds(ingestInterval);
+        }
+        if (seconds > 0) {
+            const intervalId = setInterval(() => {
+                setSeconds(prevSeconds => prevSeconds - 1);
+            }, 1000);
+            return () => clearInterval(intervalId);
+        }
+    }, [seconds]);
     
     if (verified) {
     return (
