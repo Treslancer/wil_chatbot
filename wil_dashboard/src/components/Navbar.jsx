@@ -1,10 +1,11 @@
 import { Box, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import logo from "./../assets/Logo.png";
 
 function NavBar({ setLoggedOut }) {
     const handleClick = () => {
-        if (location.pathname === '/') window.location.href = '/';
-        if (location.pathname === '/MainPage') window.location.href = '/MainPage';
+        if (location.pathname === '/') useNavigate('/');
+        if (location.pathname === '/MainPage') useNavigate('/MainPage');
     };
 
     return (
