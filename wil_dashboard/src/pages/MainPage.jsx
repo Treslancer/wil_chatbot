@@ -123,7 +123,7 @@ function MainPage() {
                     <StatCards cardTitle='Conversations' count={conversationCount} loading={conversationFetchLoading} />
                     <StatCards cardTitle='Messages' count={messageCount} loading={messageFetchLoading} />
                     <StatCards cardTitle='Files' count={fileCount} loading={fileFetchLoading} />
-                    <a href="https://www.youtube.com/watch?v=DLzxrzFCyOs">
+                    <a href="https://wildcatinnovationlabs.com">
                     <img
                         src='https://www.svgheart.com/wp-content/uploads/2021/11/walking-cat-silhouette-pet-free-svg-file-SvgHeart.Com-1.png'
                         height={parent.height}
