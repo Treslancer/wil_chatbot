@@ -19,7 +19,7 @@ function NavBar({ setLoggedOut }) {
 
             <h1 onClick={handleClick}>DASHBOARD</h1>
             <Box sx={{ ml: '20px' }}>
-                <img src="../assets/Logo.png" style={{ width: '70px' }} />
+                <img src="./src/assets/Logo.png" style={{ width: '70px' }} />
             </Box>
             {location.pathname === '/' ?
                 (
