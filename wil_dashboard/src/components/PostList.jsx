@@ -6,6 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
+import logo from "./../assets/Logo.png";
 
 // Custom function to format the datetime string
 const formatDateTime = (dateTimeString) => {
@@ -53,7 +54,7 @@ function PostList(props) {
                 <ListItemAvatar>
                     <Avatar
                         variant='rounded'
-                        src="./src/assets/Logo.png"
+                        src={logo}
                         sx={{ width: '50px', height: '50px', marginRight: '1rem', marginLeft: '1rem' }}/>
                 </ListItemAvatar>
                 <ListItemText
