@@ -105,7 +105,7 @@ function FileTable({ setConversationCount,
             try {
                 const response = await axiosInstance.get('https://renderv2-gntp.onrender.com/stats/conversation-count', {
                     params: {
-                        course_name: filteredCourse,
+                        subject: filteredCourse,
                         start_date: startDateTime,
                         end_date: endDateTime,
                     }
@@ -126,7 +126,7 @@ function FileTable({ setConversationCount,
             try {
                 const response = await axiosInstance.get('https://renderv2-gntp.onrender.com/stats/message-count', {
                     params: {
-                        course_name: filteredCourse,
+                        subject: filteredCourse,
                         start_date: startDateTime,
                         end_date: endDateTime,
                     }
