@@ -38,6 +38,7 @@ function MainPage() {
                     setVerified(false)
                     console.log('Logged out');
                     localStorage.removeItem('token');
+                    localStorage.removeItem('course');
                     navigate('/');
                     return
                 }

@@ -91,8 +91,8 @@ function FileTable({ setConversationCount,
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        setSelectedCourse(localStorage.getItem('course'))
-        setFilteredCourse(localStorage.getItem('course'))
+        setSelectedCourse(localStorage.getItem('course'));
+        fetchCourseFiles();
         if (filteredCourse === '') return
 
         const currentDate = new Date();
@@ -189,6 +189,31 @@ function FileTable({ setConversationCount,
             setFileFetchLoading(false);
         }
       };
+
+      const fetchCourseFiles = async () => {
+        setLoading(true);
+        setFileFetchLoading(true);
+    
+        try {
+            const response = await axiosInstance.get(`https://renderv2-gntp.onrender.com/knowledge_base/get_files/`, {
+                params: { course_name: localStorage.getItem('course') }
+            });
+            if (response.status === 200) {
+                const data = response.data;
+                setFilteredCourse(localStorage.getItem('course'));
+                setSelectedCourse(localStorage.getItem('course'));
+                setFileCount(data.length)
+                setData(data);
+            } else {
+                throw new Error('Failed to fetch data');
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+            setFileFetchLoading(false);
+        }
+    };
 
     useEffect(() => {
 
