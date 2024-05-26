@@ -91,6 +91,8 @@ function FileTable({ setConversationCount,
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        setSelectedCourse(localStorage.getItem('course'))
+        setFilteredCourse(localStorage.getItem('course'))
         if (filteredCourse === '') return
 
         const currentDate = new Date();
@@ -172,6 +174,7 @@ function FileTable({ setConversationCount,
             });
             if (response.status === 200) {
                 const data = response.data;
+                localStorage.setItem('course', value);
                 setFilteredCourse(value);
                 setSelectedCourse(value);
                 setFileCount(data.length)

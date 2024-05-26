@@ -31,6 +31,7 @@ function NavBar({ setLoggedOut }) {
                         <Button
                             onClick={() => {
                                 localStorage.setItem('token', '');
+                                localStorage.setItem('course', '');
                                 setLoggedOut(true);
                             }}
                             sx={{
