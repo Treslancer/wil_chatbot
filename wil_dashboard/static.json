@@ -1,2 +1,6 @@
 {
+  "redirects": [
+    { "source": "/", "destination": "/" },
+    { "source": "/MainPage", "destination": "/MainPage" }
+  ]
 }
